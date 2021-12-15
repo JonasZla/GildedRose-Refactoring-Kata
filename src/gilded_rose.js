@@ -24,82 +24,74 @@ class Shop {
       }
       switch (item.name) {
         case sulfuras:
-          item.quality = this.increaseQuality(item.quality);
+          this.increaseQuality(item);
           break;
         case agedBrie:
-          item = this.proccessAgedBrie(item);
+          this._processAgedBrie(item);
           break;
         case backstagePasses:
-          item = this.proccessBackstagePasses(item);
+          this.processBackstagePasses(item);
           break;
         case conjured:
-          item = this.proccessConjured(item);
+          this.processConjured(item);
           break;
         default:
-          item = this.processDefault(item);
+          this.processDefault(item);
           break;
       }
     });
     return this.items;
   }
 
-  increaseQuality(quality) {
-    if (quality < 50) {
-      return quality + 1;
-    } else {
-      return quality;
+  increaseQuality(item) {
+    if (item.quality < 50) {
+      item.quality++;
     }
   }
 
-  decreaseQuality(quality) {
-    if (quality > 0) {
-      return quality - 1;
-    } else {
-      return quality;
+  decreaseQuality(item) {
+    if (item.quality > 0) {
+      item.quality--;
     }
   }
 
-  proccessAgedBrie(item) {
-    item.quality = this.increaseQuality(item.quality);
+  _processAgedBrie(item) {
+    this.increaseQuality(item);
     if (item.sellIn < 0) {
-      item.quality = this.increaseQuality(item.quality);
-    };
-    return item;
+      this.increaseQuality(item);
+    }
   }
 
-  proccessBackstagePasses(item) {
+  processBackstagePasses(item) {
     if (item.sellIn < 0) {
       item.quality = 0;
     } else {
-      item.quality = this.increaseQuality(item.quality);
+      this.increaseQuality(item);
       if (item.sellIn < 11) {
-        item.quality = this.increaseQuality(item.quality);
+        this.increaseQuality(item);
       }
       if (item.sellIn < 6) {
-        item.quality = this.increaseQuality(item.quality);
+        this.increaseQuality(item);
       }
     }
-    return item;
   }
 
-  proccessConjured(item) {
+  processConjured(item) {
     if (item.sellIn < 0) {
       for (let i = 0; i < 4; i++) {
-        item.quality = this.decreaseQuality(item.quality);
+        this.decreaseQuality(item);
       }
     } else {
-      item.quality = this.decreaseQuality(item.quality);
-      item.quality = this.decreaseQuality(item.quality);
+      this.decreaseQuality(item);
+      this.decreaseQuality(item);
     }
-    return item;
   }
 
   processDefault(item) {
-    item.quality = this.decreaseQuality(item.quality);
+    this.decreaseQuality(item);
     if (item.sellIn < 0) {
-      item.quality = this.decreaseQuality(item.quality);
+      this.decreaseQuality(item);
     }
-    return item;
   }
 
 }
