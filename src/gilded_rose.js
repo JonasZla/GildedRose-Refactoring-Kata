@@ -27,40 +27,16 @@ class Shop {
           item.quality = this.increaseQuality(item.quality);
           break;
         case agedBrie:
-          item.quality = this.increaseQuality(item.quality);
-          if (item.sellIn < 0) {
-            item.quality = this.increaseQuality(item.quality);
-          }
+          item = this.proccessAgedBrie(item);
           break;
         case backstagePasses:
-          if (item.sellIn < 0) {
-            item.quality = 0;
-            break;
-          }
-          item.quality = this.increaseQuality(item.quality);
-          if (item.sellIn < 11) {
-            item.quality = this.increaseQuality(item.quality);
-          }
-          if (item.sellIn < 6) {
-            item.quality = this.increaseQuality(item.quality);
-          }
+          item = this.proccessBackstagePasses(item);
           break;
         case conjured:
-          if (item.sellIn < 0) {
-            item.quality = this.decreaseQuality(item.quality);
-            item.quality = this.decreaseQuality(item.quality);
-            item.quality = this.decreaseQuality(item.quality);
-            item.quality = this.decreaseQuality(item.quality);
-          } else {
-            item.quality = this.decreaseQuality(item.quality);
-            item.quality = this.decreaseQuality(item.quality);
-          }
+          item = this.proccessConjured(item);
           break;
         default:
-          item.quality = this.decreaseQuality(item.quality);
-          if (item.sellIn < 0) {
-            item.quality = this.decreaseQuality(item.quality);
-          }
+          item = this.processDefault(item);
           break;
       }
     });
@@ -81,6 +57,49 @@ class Shop {
     } else {
       return quality;
     }
+  }
+
+  proccessAgedBrie(item) {
+    item.quality = this.increaseQuality(item.quality);
+    if (item.sellIn < 0) {
+      item.quality = this.increaseQuality(item.quality);
+    };
+    return item;
+  }
+
+  proccessBackstagePasses(item) {
+    if (item.sellIn < 0) {
+      item.quality = 0;
+    } else {
+      item.quality = this.increaseQuality(item.quality);
+      if (item.sellIn < 11) {
+        item.quality = this.increaseQuality(item.quality);
+      }
+      if (item.sellIn < 6) {
+        item.quality = this.increaseQuality(item.quality);
+      }
+    }
+    return item;
+  }
+
+  proccessConjured(item) {
+    if (item.sellIn < 0) {
+      for (let i = 0; i < 4; i++) {
+        item.quality = this.decreaseQuality(item.quality);
+      }
+    } else {
+      item.quality = this.decreaseQuality(item.quality);
+      item.quality = this.decreaseQuality(item.quality);
+    }
+    return item;
+  }
+
+  processDefault(item) {
+    item.quality = this.decreaseQuality(item.quality);
+    if (item.sellIn < 0) {
+      item.quality = this.decreaseQuality(item.quality);
+    }
+    return item;
   }
 
 }
