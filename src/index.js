@@ -15,40 +15,40 @@ const items = [
 
 const gildedRose = new Shop(items);
 
-for (let i = 0; i < updateTimes; i++) {
-  console.log('Call happened')
-  processHttpRequests(startRequests)
-  gildedRose.updateQuality()
-};
-console.log(gildedRose)
+run();
 
+async function run() {
+  for (let i = 0; i < updateTimes; i++) {
+    await processHttpRequests(startRequests);
+    gildedRose.updateQuality();
+  };
+  console.log(gildedRose);
+}
 
-function processHttpRequests(requestsCount) {
+async function processHttpRequests(requestsCount) {
   const getPromises = async () => {
-    const promise = await axios.get("https://yesno.wtf/api")
-    return promise
+    const promise = await axios.get("https://yesno.wtf/api");
+    return promise;
   }
-  var promises = []
+  var promises = [];
   for (let i = 0; i < requestsCount; i++) {
-    promises.push(getPromises())
+    promises.push(getPromises());
   }
-  console.log('getting promisses.....')
-  Promise.all(promises).then(data => {
-    var counter = 0
-    data.forEach(item => {
-      console.log(item.data.answer)
-      if (item.data.answer === 'yes') {
-        counter++
-      }
-    })
-    console.log(counter)
-    writeCounterToFile(counter);
-    if (counter > 0) {
-      processHttpRequests(counter);
+  const data = await Promise.all(promises);
+  var counter = 0;
+  data.forEach(item => {
+    console.log('Response from API: ', item.data.answer);
+    if (item.data.answer === 'yes') {
+      counter++;
     }
   })
+  console.log('Yes counter: ', counter);
+  writeCounterToFile(counter);
+  if (counter > 0) {
+    await processHttpRequests(counter);
+  }
 }
 
 async function writeCounterToFile(counter) {
-  const file = await fs.writeFile('./log.txt', counter.toString())
+  await fs.writeFile('./log.txt', counter.toString());
 }
